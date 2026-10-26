@@ -1,0 +1,52 @@
+class Solution {
+    public int minDiff(int k, int[] arr) {
+        int n = arr.length;
+
+        if (k == 0) {
+            int min = Integer.MAX_VALUE;
+            int max = Integer.MIN_VALUE;
+
+            for (int x : arr) {
+                min = Math.min(min, x);
+                max = Math.max(max, x);
+            }
+            return max - min;
+        }
+
+        int remaining = n - k;
+        if (remaining <= 1) return 0;
+
+        int[] leftMin = new int[n + 1];
+        int[] leftMax = new int[n + 1];
+
+        leftMin[0] = Integer.MAX_VALUE;
+        leftMax[0] = Integer.MIN_VALUE;
+
+        for (int i = 0; i < n; i++) {
+            leftMin[i + 1] = Math.min(leftMin[i], arr[i]);
+            leftMax[i + 1] = Math.max(leftMax[i], arr[i]);
+        }
+
+        int[] rightMin = new int[n + 1];
+        int[] rightMax = new int[n + 1];
+
+        rightMin[n] = Integer.MAX_VALUE;
+        rightMax[n] = Integer.MIN_VALUE;
+
+        for (int i = n - 1; i >= 0; i--) {
+            rightMin[i] = Math.min(rightMin[i + 1], arr[i]);
+            rightMax[i] = Math.max(rightMax[i + 1], arr[i]);
+        }
+
+        int ans = Integer.MAX_VALUE;
+
+        for (int i = 0; i <= n - k; i++) {
+            int min = Math.min(leftMin[i], rightMin[i + k]);
+            int max = Math.max(leftMax[i], rightMax[i + k]);
+
+            ans = Math.min(ans, max - min);
+        }
+
+        return ans;
+    }
+}
